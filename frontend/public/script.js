@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const dropdown = document.querySelector(".dropdown");
 
     let map;
+    let lastSearchedCountry = "";
+    let countriesData = [];
     const isWorldMapPage = document.body.classList.contains("worldmap-page");
 
     if (document.getElementById("map")) {
@@ -30,27 +32,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function highlightCountry(countryName) {
+        if (countryName == lastSearchedCountry) return;
+        lastSearchedCountry = countryName;
+    
         fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + countryName)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
-                    const lat = data[0].lat;
-                    const lon = data[0].lon;
-
+                    const { lat, lon } = data[0];
+    
                     if (!map) return;
-
+    
                     map.eachLayer(layer => {
                         if (layer instanceof L.Marker) {
                             map.removeLayer(layer);
                         }
                     });
-
+    
                     L.marker([lat, lon]).addTo(map)
                         .bindPopup(`<b>${countryName}</b>`)
                         .openPopup();
-
-                    // Get rid of this shit
-                    map.setView([lat, lon], 5);
                 } else {
                     alert("Country not found. Try a different name.");
                 }
@@ -58,46 +59,36 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => console.error("Error fetching country data:", error));
     }
 
+    function handleSearch(event) {
+        const searchTerm = event.target.value.trim().toLowerCase();
+        
+        if (searchTerm.length > 2) {
+            highlightCountry(searchTerm);
+        }
+    
+        const filteredCountries = countriesData.filter(country => 
+            country.name.toLowerCase().includes(searchTerm)
+        );
+        displayCountries(filteredCountries);
+    }
+    
     if (searchInput) {
-        searchInput.addEventListener("input", (event) => {
-            const searchValue = event.target.value.trim();
-            if (searchValue.length > 2) {
-                highlightCountry(searchValue);
-            }
-        });
+        searchInput.addEventListener("input", handleSearch);
     }
 
     if (container) {
-        fetch("./countries.json")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
+        fetchCountries();
+    }
+
+    function fetchCountries() {
+        fetch("http://localhost:5000/api/countries")
+            .then(response => response.json())
             .then(countries => {
-                if (!isWorldMapPage) {
-                    displayCountries(countries);
-                }
-
-                searchInput.addEventListener("input", () => {
-                    const searchTerm = searchInput.value.toLowerCase();
-                    const filteredCountries = countries.filter(country =>
-                        country.name.toLowerCase().includes(searchTerm)
-                    );
-
-                    if (isWorldMapPage) {
-                        if (searchTerm.length > 2 && filteredCountries.length > 0) {
-                            container.style.display = "block";
-                        } else {
-                            container.style.display = "none";
-                        }
-                    }
-
-                    displayCountries(filteredCountries);
-                });
+                countriesData = countries;
+                console.log("Loaded countries: ", countriesData)
+                displayCountries(countriesData)
             })
-            .catch(error => console.error("Error loading countries:", error));
+            .catch(error => console.error("Error fetching country data", error))
     }
 
     function displayCountries(countries) {
