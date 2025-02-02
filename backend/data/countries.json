@@ -1,0 +1,34 @@
+[
+    {
+        "name": "Poland",
+        "capital": "Warsaw",
+        "continent": "Europe",
+        "population": "38000000",
+        "currency": "PLN",
+        "language": "Polish"
+    },
+    {
+        "name": "France",
+        "capital": "Paris",
+        "continent": "Europe",
+        "population": 67000000,
+        "currency": "EUR",
+        "language": "French"
+    },
+    {
+        "name": "Japan",
+        "capital": "Tokio",
+        "continent": "Asia",
+        "population": 126000000,
+        "currency": "JPY",
+        "language": "Japanese"
+    },
+    {
+        "name":"United States of America",
+        "capital": "Washington, D.C.",
+        "continent": "North America",
+        "population": 335000000,
+        "currency": "USD",
+        "language": "English"
+    }
+]
