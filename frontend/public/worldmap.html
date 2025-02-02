@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<html lang="eng">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>world map</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body class="worldmap-page">
+        <header>
+            <h1>World map</h1>
+            <div class="dropdown">
+                <button id="menu-button">Menu</button>
+                <div class="dropdown-content">
+                    <a href="./index.html" id="home-button">Home</a>
+                    <a href="./worldmap.html" id="world-map">World map</a>
+                    <a href="./about.html" id="about">About</a>
+                </div>
+            </div>
+            <input type="text" id="search" placeholder="Searching for country...">
+        </header>
+        <main>
+            <div id="map"></div>
+            <div id="countries-container"></div>
+        </main>
+        <script src="./script.js"></script>
+    </body>
+</html>
